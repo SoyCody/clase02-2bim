@@ -7,14 +7,12 @@ from modelo import Serie, Actor
 engine=create_engine(cadena_base_datos)
 Session=sessionmaker(bind=engine)
 session=Session()
-resultados = (
-    session.query(
-        Serie.titulo,
-        func.avg(Actor.edad))
-    .join(Actor).group_by(Serie.id, Serie.titulo)
-    .order_by(Serie.titulo).all())
+serie= session.query(Serie).order_by(Serie.titulo).all()
 
-for serie, promedio in resultados:
+for s in serie:
+    promedio = s.obtener_edad_actores()
+    premios= s.obtener_numero_premios()
     print(
-        f"Serie: {serie}, "
-        f"Promedio de edad: {promedio:.2f}")
+        f"Serie: {s.titulo}, "
+        f"Promedio de edad: {promedio:.2f}, "
+        f"Número de premios: {premios}")
